@@ -1,8 +1,8 @@
-#Getriebe berechnen
+# Getriebe berechnen
 
 Dieses Tool ermöglich es die Getriebe brechneung des NRW Maschinenebazu Abitur zu automatisieren. 
 
-##UI version
+## UI version
 
 Zum nutzen einfach Python instalieren und tkinter and math als addones installieren.
 
@@ -11,7 +11,7 @@ Zum nutzen einfach Python instalieren und tkinter and math als addones installie
 
 Dann einfach main_UI.py ausführen und Werte eingeben.
 
-##command line verion
+## command line verion
 
 Zum nutzen einfach Python instalieren math als addones installieren.
 
