@@ -5,11 +5,10 @@ Dieses Tool ermöglich es die Getriebe brechneung des NRW Maschinenebazu Abitur 
 ## UI version
 
 Zum nutzen einfach Python instalieren und tkinter and math als addones installieren.
-``
+```
 !pip install tkinter
-
 !pip install math
-``
+```
 Dann einfach main_UI.py ausführen und Werte eingeben.
 
 ## command line verion
