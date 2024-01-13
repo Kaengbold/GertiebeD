@@ -1,0 +1,237 @@
+
+from tkinter import *
+import math
+
+# Die folgende Funktion soll ausgeführt werden, wenn
+# der Benutzer den Button Klick me anklickt
+def button_action_motor():
+    entry_text_motor = str(eingabefeld_motor.get()) or 250
+    entry_text_drehzahl = str(eingabefeld_drehzahl.get()) or 1380
+    entry_text_efficents = str(eingabefeld_efficents.get()) or 100
+    entry_text_übersetzung = str(eingabefeld_übersetzung.get()) or 1.08704337899
+    entry_text_modul = str(eingabefeld_modul.get()) or 3
+    entry_text_zähnezahl = str(eingabefeld_zähnezahl.get()) or 60
+    entry_text_zahnradwinkel = str(eingabefeld_zahnradwinkel.get()) or 20
+    entry_text_korektur = str(eingabefeld_korektur.get()) or 2
+    Rimenscheibedurchmesser = str(eingabefeld_Rimenscheibedurchmesser.get()) or 350.4
+    Fw_vorzeichen_draufsicht = str(eingabefeld_Fw_vorzeichen_y.get()) or -1
+    Fzt_vorzeichen_draufsicht = str(eingabefeld_Fzt_vorzeichen_y.get()) or 0
+    Fr_vorzeichen_draufsicht = str(eingabefeld_Fr_vorzeichen_y.get()) or 1
+    Länge_fa_zu_Fw = str(eingabefeld_Länge_fa_zu_Fw.get()) or -475
+    Länge_fa_zu_Fzt = str(eingabefeld_Länge_fa_zu_Fzt.get()) or 0
+    Länge_fa_zu_Fr = str(eingabefeld_Länge_fa_zu_Fr.get()) or 125
+    Länge_fa_zu_fb = str(eingabefeld_Länge_fa_zu_fb.get()) or 300
+    Fw_vorzeichen_Frontsicht = str(eingabefeld_Fw_vorzeichen_x.get()) or 0
+    Fzt_vorzeichen_Frontsicht = str(eingabefeld_Fzt_vorzeichen_x.get()) or 1
+    Fr_vorzeichen_Frontsicht = str(eingabefeld_Fr_vorzeichen_x.get()) or 0
+    Länge_fa_zu_Fwx = str(eingabefeld_Länge_fa_zu_Fwx.get()) or 0
+    Länge_fa_zu_Fztx = str(eingabefeld_Länge_fa_zu_Fztx.get()) or 125
+    Länge_fa_zu_Frx = str(eingabefeld_Länge_fa_zu_Frx.get()) or 0
+    Länge_fa_zu_fbx = str(eingabefeld_Länge_fa_zu_fbx.get()) or 300
+
+    if (entry_text_motor != "") and (entry_text_drehzahl != ""):
+        Motorleistung = float(entry_text_motor)
+        Drehzahlmotor = float(entry_text_drehzahl)     
+        #x = float(input(x: ))
+        drehmoment_motor = (Motorleistung*9550)/Drehzahlmotor
+        entry_text = "Das Drehmoment am Motor ist " + str(drehmoment_motor) + "Nm" 
+        Drehmoment_motor.config(text=entry_text)
+
+    if (entry_text_efficents != "") and (entry_text_übersetzung != ""): 
+        Efficentsgrad_der_Übersetzung =float(entry_text_efficents)
+        übersetzungsverhätnis = float(entry_text_übersetzung)
+        drehmoment_getriebe = Drehzahlmotor / übersetzungsverhätnis 
+        drehzahl_getriebe = drehmoment_motor * übersetzungsverhätnis
+        drehzahl_getriebe_eff = (Efficentsgrad_der_Übersetzung/100) * drehzahl_getriebe
+        drehmoment_getriebe_eff = (Efficentsgrad_der_Übersetzung/100) * drehmoment_getriebe
+        
+
+        entry_text2 = "Das Drehmoment am Getriebe ist " + str(drehzahl_getriebe_eff) + "Nm"
+        entry_text3 = "Das Drehzahl am Getriebe ist " + str(drehmoment_getriebe_eff) + "rpm"
+
+        drehmoment_gebriebe.config(text=entry_text2)
+        drehzahl_getrieb.config(text=entry_text3)
+
+    if(entry_text_modul != "") and (entry_text_zähnezahl != ""):
+                
+        teilkreisdruchmesser = float(entry_text_modul) * float(entry_text_zähnezahl)
+        entry_text_4 = "Der Teilkreisdruchmesser ist "+str(teilkreisdruchmesser) +"mm"
+        teilkreisdurchmesser.config(text=entry_text_4)
+    
+    if(entry_text_modul != "") and (entry_text_zähnezahl != "") and (entry_text_zahnradwinkel != ""):
+        tangenzialkraft = drehzahl_getriebe_eff / (teilkreisdruchmesser/2000)
+        Zahnradwinkel = float(entry_text_zahnradwinkel)
+        radialkraft = tangenzialkraft * math.tan(Zahnradwinkel*(3.14159265359/180))
+        entry_text_5 = "Die Tangenzialkalft ist " + str(tangenzialkraft) +"N"
+        Tangenzialkraft.config(text=entry_text_5)
+        entry_text_6 = "Die Radialkart ist " + str(radialkraft) +"N"
+        Radialkraft.config(text=entry_text_6)
+    
+    if(entry_text_korektur != "") and ( Rimenscheibedurchmesser != ""):
+        tangenzialkraft_rimenscheibe = (drehzahl_getriebe_eff *2000 * float(entry_text_korektur)) / (float(Rimenscheibedurchmesser))
+        entry_text_7 = "Die Tangenzialkraft ist Fw: " + str(tangenzialkraft_rimenscheibe) + "N"
+        Tangenzialkraft_rimenscheibe.config(text=entry_text_7)
+
+    if(Fzt_vorzeichen_draufsicht != "") and ( Länge_fa_zu_Fr != ""):
+        
+        fby = -(tangenzialkraft_rimenscheibe * float(Länge_fa_zu_Fw) + radialkraft * float(Länge_fa_zu_Fr)+ tangenzialkraft *float(Länge_fa_zu_Fzt) ) / float(Länge_fa_zu_fb)
+        fay = -(float(Fw_vorzeichen_draufsicht)*tangenzialkraft_rimenscheibe+fby+radialkraft*float(Fr_vorzeichen_draufsicht)+tangenzialkraft*float(Fzt_vorzeichen_draufsicht))
+
+        entry_text_Fay1 = "Lagerkraft für die Draufsicht für Fay: "+str(fay) + "N"
+        entry_text_Fby = "Lagerkraft für die Draufsicht für Fby: "+str(fby) + "N"
+        Fay_end.config(text=entry_text_Fay1)
+        Fby_end.config(text=entry_text_Fby)
+        
+    if(Fzt_vorzeichen_Frontsicht != "") and ( Länge_fa_zu_Fr != ""):
+        
+        fbx = -(tangenzialkraft_rimenscheibe * float(Länge_fa_zu_Fwx) + radialkraft * float(Länge_fa_zu_Frx)+ tangenzialkraft *float(Länge_fa_zu_Fztx) ) / float(Länge_fa_zu_fbx)
+        fax = -1*(float(Fw_vorzeichen_Frontsicht)*tangenzialkraft_rimenscheibe+fbx+radialkraft*float(Fr_vorzeichen_Frontsicht)+tangenzialkraft*float(Fzt_vorzeichen_Frontsicht))
+
+        entry_text_Fax = "Lagerkraft für die Draufsicht für Fay: "+str(fax) + "N"
+        entry_text_Fbx = "Lagerkraft für die Draufsicht für Fby: "+str(fbx) + "N"
+        Fax_end.config(text=entry_text_Fax)
+        Fbx_end.config(text=entry_text_Fbx)    
+
+fenster = Tk()
+fenster.title("Getriebe berechnung.")
+
+# Anweisungs-Label
+my_label_drehzahl = Label(fenster, text="Gib Drehzahl an in rpm :")
+my_label_motor = Label(fenster, text="Gib Motorleistung an in kN: ")
+my_lable_efficents = Label(fenster, text="Gib den efficentsgrad der Übsertzung an in %: ")
+my_lable_Übersetzung = Label(fenster, text="Gib das Übersetzungsverhälnis an: ")
+my_lable_modul = Label(fenster, text="Gib das Mudul vom Zahnrad an: ")
+my_lable_zähnezahl = Label(fenster, text="Gib die Zähnezahl des Zahnrattes an: ")
+my_lable_zahnradwinkel = Label(fenster, text="Gib Zanradwinkel an: ")
+my_lable_korektur = Label(fenster, text="Gib den Korekturfaktor für Fw an: ")
+my_lable_Rimenscheibendurchmesser = Label(fenster, text="Gib Druchmesser der Rimenscheibe an: ")
+my_lable_Fw_vorzeichen_y = Label(fenster, text="Fw Vorzeichen, Draufsicht als Faktor(-1 or +1): ")
+my_lable_Fzt_vorzeichen_y = Label(fenster, text="Tangenzialkraft, Draufsicht als Faktor (-1 or +1): ")
+my_lable_Fr_vorzeichen_y = Label(fenster, text="Radialkraft, Draufsicht als Faktor (-1 or +1): ")
+my_lable_Fa_vorzeichen_y = Label(fenster, text="Lagerkraft a, Draufsicht wird prositiv angenommen")
+my_lable_Fb_vorzeichen_y = Label(fenster, text="Lagerkraft b, Draufsicht wird prositiv angenommen")
+my_lable_Länge_fa_zu_Fw = Label(fenster, text="Länge zwischen Fa und Fw, Vorzeichen = Drehrichtung um Fa: ")
+my_lable_Länge_fa_zu_Fzt = Label(fenster, text="Länge zwischen Fa und Fzt, Vorzeichen = Drehrichtung um Fa: ")
+my_lable_Länge_fa_zu_Fr = Label(fenster, text="Länge zwischen Fa und Fr, Vorzeichen = Drehrichtung um Fa: ")
+my_lable_Länge_fa_zu_fb = Label(fenster, text="Länge zwischen Fa und Fb, Vorzeichen = Drehrichtung um Fa: ")
+my_lable_Fw_vorzeichen_x = Label(fenster, text="Fw Vorzeichen, Frontsicht als Faktor(-1 or +1): ")
+my_lable_Fzt_vorzeichen_x = Label(fenster, text="Tangenzialkraft, Frontsicht als Faktor (-1 or +1): ")
+my_lable_Fr_vorzeichen_x = Label(fenster, text="Radialkraft, Frontsicht als Faktor (-1 or +1): ")
+my_lable_Fa_vorzeichen_x = Label(fenster, text="Lagerkraft a, Frontsicht als Faktor (-1 or +1): ")
+my_lable_Fb_vorzeichen_x = Label(fenster, text="Lagerkraft b, Frontsicht als Faktor (-1 or +1): ")
+my_lable_Länge_fa_zu_Fwx = Label(fenster, text="Länge zwischen Fa und Fw, Vorzeichen = Drehrichtung um Fa: ")
+my_lable_Länge_fa_zu_Fztx = Label(fenster, text="Länge zwischen Fa und Fzt, Vorzeichen = Drehrichtung um Fa: ")
+my_lable_Länge_fa_zu_Frx = Label(fenster, text="Länge zwischen Fa und Fr, Vorzeichen = Drehrichtung um Fa: ")
+my_lable_Länge_fa_zu_fbx = Label(fenster, text="Länge zwischen Fa und Fb, Vorzeichen = Drehrichtung um Fa: ")
+
+# In diesem Label wird nach dem Klick auf den Button der Benutzer
+# mit seinem eingegebenen Namen begrüsst.
+Drehmoment_motor = Label(fenster)
+drehmoment_gebriebe = Label(fenster)
+drehzahl_getrieb = Label(fenster)
+teilkreisdurchmesser = Label(fenster)
+zahnradwinkel = Label(fenster)
+Radialkraft = Label(fenster)
+Tangenzialkraft = Label(fenster)
+Tangenzialkraft_rimenscheibe = Label(fenster)
+Fay_end = Label(fenster)
+Fby_end = Label(fenster)
+Fax_end = Label(fenster)
+Fbx_end = Label(fenster)
+
+# Hier kann der Benutzer eine Eingabe machen
+eingabefeld_motor = Entry(fenster, bd=5, width=15)
+eingabefeld_drehzahl = Entry(fenster, bd=5, width=15)
+eingabefeld_efficents = Entry(fenster, bd=5, width=15)
+eingabefeld_übersetzung = Entry(fenster, bd=5, width=15)
+eingabefeld_modul = Entry(fenster, bd=5, width=15)
+eingabefeld_zähnezahl = Entry(fenster, bd=5, width=15)
+eingabefeld_zahnradwinkel = Entry(fenster, bd=5, width=15)
+eingabefeld_korektur = Entry(fenster, bd=5, width=15)
+eingabefeld_Rimenscheibedurchmesser = Entry(fenster, bd=5, width=15)
+eingabefeld_Fw_vorzeichen_y = Entry(fenster, bd=5, width=15)
+eingabefeld_Fzt_vorzeichen_y = Entry(fenster, bd=5, width=15)
+eingabefeld_Fr_vorzeichen_y = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_Fw = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_Fzt = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_Fr = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_fb = Entry(fenster, bd=5, width=15)
+eingabefeld_Fw_vorzeichen_x = Entry(fenster, bd=5, width=15)
+eingabefeld_Fzt_vorzeichen_x = Entry(fenster, bd=5, width=15)
+eingabefeld_Fr_vorzeichen_x = Entry(fenster, bd=5, width=15)
+eingabefeld_Fa_vorzeichen_x = Entry(fenster, bd=5, width=15)
+eingabefeld_Fb_vorzeichen_x = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_Fwx = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_Fztx = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_Frx = Entry(fenster, bd=5, width=15)
+eingabefeld_Länge_fa_zu_fbx = Entry(fenster, bd=5, width=15)
+
+
+welcom_button = Button(fenster, text="berechnen", command=button_action_motor)
+exit_button = Button(fenster, text="Beenden", command=fenster.quit)
+
+
+# Nun fügen wir die Komponenten unserem Fenster hinzu
+my_label_drehzahl.grid(row = 1, column = 0)
+my_label_motor.grid(row = 0, column = 0)
+my_lable_efficents.grid(row = 2, column = 0)
+my_lable_Übersetzung.grid(row = 3, column = 0)
+my_lable_modul.grid(row = 0, column = 3)
+my_lable_zähnezahl.grid(row = 1, column = 3)
+my_lable_zahnradwinkel.grid(row = 2, column = 3)
+my_lable_korektur.grid(row = 3, column = 3)
+my_lable_Rimenscheibendurchmesser.grid(row = 4, column = 3)
+my_lable_Fw_vorzeichen_y.grid(row = 9, column = 0)
+my_lable_Fzt_vorzeichen_y.grid(row = 10, column = 0)
+my_lable_Fr_vorzeichen_y.grid(row = 11, column = 0)
+my_lable_Länge_fa_zu_Fw.grid(row = 14, column = 0)
+my_lable_Länge_fa_zu_Fzt.grid(row = 15, column = 0)
+my_lable_Länge_fa_zu_Fr.grid(row = 16, column = 0)
+my_lable_Länge_fa_zu_fb.grid(row = 17, column = 0)
+my_lable_Fw_vorzeichen_x.grid(row = 9, column = 3)
+my_lable_Fzt_vorzeichen_x.grid(row = 10, column = 3)
+my_lable_Fr_vorzeichen_x.grid(row = 11, column = 3)
+my_lable_Länge_fa_zu_Fwx.grid(row = 14, column = 3)
+my_lable_Länge_fa_zu_Fztx.grid(row = 15, column = 3)
+my_lable_Länge_fa_zu_Frx.grid(row = 16, column = 3)
+my_lable_Länge_fa_zu_fbx.grid(row = 17, column = 3)
+
+eingabefeld_motor.grid(row = 0, column = 1)
+eingabefeld_drehzahl.grid(row = 1, column = 1)
+eingabefeld_efficents.grid(row = 2, column = 1)
+eingabefeld_übersetzung.grid(row = 3, column = 1)
+eingabefeld_modul.grid(row = 0, column = 4)
+eingabefeld_zähnezahl.grid(row = 1, column = 4)
+eingabefeld_zahnradwinkel.grid(row = 2, column = 4)
+eingabefeld_korektur.grid(row = 3, column = 4)
+eingabefeld_Rimenscheibedurchmesser.grid(row = 4, column = 4)
+eingabefeld_Fw_vorzeichen_y.grid(row = 9, column = 1)
+eingabefeld_Fzt_vorzeichen_y.grid(row = 10, column = 1)
+eingabefeld_Fr_vorzeichen_y.grid(row = 11, column = 1)
+eingabefeld_Länge_fa_zu_Fw.grid(row = 14, column = 1)
+eingabefeld_Länge_fa_zu_Fzt.grid(row = 15, column = 1)
+eingabefeld_Länge_fa_zu_Fr.grid(row = 16, column = 1)
+eingabefeld_Länge_fa_zu_fb.grid(row = 17, column = 1)
+eingabefeld_Fw_vorzeichen_x.grid(row = 9, column = 4)
+eingabefeld_Fzt_vorzeichen_x.grid(row = 10, column = 4)
+eingabefeld_Fr_vorzeichen_x.grid(row = 11, column = 4)
+eingabefeld_Länge_fa_zu_Fwx.grid(row = 14, column = 4)
+eingabefeld_Länge_fa_zu_Fztx.grid(row = 15, column = 4)
+eingabefeld_Länge_fa_zu_Frx.grid(row = 16, column = 4)
+eingabefeld_Länge_fa_zu_fbx.grid(row = 17, column = 4)
+
+welcom_button.grid(row = 0, column = 6)
+#exit_button.grid(row = 4, column = 1)
+Drehmoment_motor.grid(row = 5, column = 0, columnspan = 2)
+drehmoment_gebriebe.grid(row = 6, column = 0, columnspan = 2)
+drehzahl_getrieb.grid(row = 7, column = 0, columnspan = 2)
+teilkreisdurchmesser.grid(row = 5, column = 3, columnspan = 2)
+Tangenzialkraft.grid(row = 6, column = 3, columnspan = 2)
+Radialkraft.grid(row = 7, column = 3, columnspan = 2)
+Tangenzialkraft_rimenscheibe.grid(row = 8, column = 3, columnspan = 2)
+Fay_end.grid(row = 18, column = 0, columnspan = 2)
+Fby_end.grid(row = 19, column = 0, columnspan = 2)
+Fax_end.grid(row = 18, column = 3, columnspan = 2)
+Fbx_end.grid(row = 19, column = 3, columnspan = 2)
+
+mainloop()
